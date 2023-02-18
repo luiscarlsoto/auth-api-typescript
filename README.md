@@ -32,7 +32,7 @@ This is an authentication API built with TypeScript. It allows users to register
 ### Register a New User
 #### Request
 
-- ``post /register``
+- ``POST /register``
 ```javascript
 // Content-Type: application/json
 
@@ -41,7 +41,7 @@ This is an authentication API built with TypeScript. It allows users to register
   "password": "your-password"
 }
 ```
-- ``post /login``
+- ``POST /login``
 ```javascript
 // Content-Type: application/json
 
