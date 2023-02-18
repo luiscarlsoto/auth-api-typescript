@@ -10,7 +10,7 @@ This is an authentication API built with TypeScript. It allows users to register
 - bcrypt
 
 ## Getting Started
-1. Clone the repository: git clone https://github.com/luiscarlsoto/auth-api-typescript.git.
+1. Clone the repository: git clone https://github.com/luiscarlsoto/auth-api-typescript.git
 2. Install dependencies: `npm install.`
 3. Set up environment variables:
     - Create a `.env` file at the root of the project.
