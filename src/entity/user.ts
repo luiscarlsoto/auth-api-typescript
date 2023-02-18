@@ -5,19 +5,23 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
     id: number
 
-  @Column()
+  @Column({
+    unique: true
+  })
     email: string
 
   @Column()
     password: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
     image: string
 
   @Column({
     default: false
   })
-    status: Boolean
+    disabled: Boolean
 
   @CreateDateColumn()
     createdAt: Date
