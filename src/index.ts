@@ -2,9 +2,10 @@ import express from 'express'
 import { authRoutes } from './routes'
 import 'reflect-metadata'
 import { AppDataSource } from './data-source'
+import cors from 'cors'
 
 const app = express()
-
+app.use(cors())
 app.use(express.json())
 
 AppDataSource.initialize()
@@ -15,6 +16,8 @@ AppDataSource.initialize()
 
 app.use('/api/auth', authRoutes)
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000')
+const serverPort = process.env.SERVER_PORT ?? 3000
+
+app.listen(serverPort, () => {
+  console.log(`Server is running on port ${serverPort}`)
 })
