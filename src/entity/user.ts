@@ -21,7 +21,7 @@ export class User extends BaseEntity {
   @Column({
     default: false
   })
-    disabled: Boolean
+    disabled: boolean
 
   @CreateDateColumn()
     createdAt: Date
