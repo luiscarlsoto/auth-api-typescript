@@ -1,5 +1,6 @@
 # Authentication API with TypeScript
 
+
 This is an authentication API built with TypeScript. It allows users to register, login, and authenticate with JWT tokens.
 
 ## Technologies Used
