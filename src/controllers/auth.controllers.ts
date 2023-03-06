@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { User } from '../entity/user'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { respond } from '../helpers/commons.helper'
 
 export const signUp = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -11,40 +12,61 @@ export const signUp = async (req: Request, res: Response): Promise<any> => {
     user.email = email
     user.password = encryptedPassword
     await user.save()
-    return res.json({ message: 'Usuario registrado' })
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
+
+    respond(res, {
+      token,
+      status: {
+        type: 'success',
+        key: 'auth.signup.success'
+      }
+    })
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: 'An error occurred while user registration' })
+    respond(res, {
+      status: {
+        type: 'error',
+        key: 'auth.signup.error'
+      }
+    })
   }
 }
 
 export const signIn = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body
-    const tokenTest = req.body.token
-    jwt.verify(tokenTest, process.env.JWT_SECRET ?? 'SECRET_123', (err: any, decoded: any) => {
-      // eslint-disable-next-line no-extra-boolean-cast
-      if (Boolean(err)) {
-        console.log(err)
-      } else {
-        console.log(decoded)
-      }
-    })
+
     const result = await User.findOneOrFail({
       where: {
         email
       }
     })
+
     const isPasswordValid: boolean = await bcrypt.compare(String(password), result.password)
+
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'You have entered an invalid username or password' })
+      return respond(res, {
+        status: {
+          type: 'error',
+          key: 'auth.signin.invalidCredentials'
+        }
+      })
     }
 
-    const token = jwt.sign({ email, id: result.id }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
-
-    return res.json({ token, message: 'You have successfully logged in' })
+    const token = jwt.sign({ email }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
+    respond(res, {
+      token,
+      status: {
+        type: 'success',
+        key: 'auth.signin.success'
+      }
+    })
   } catch (error) {
-    console.error(error)
-    return res.status(500).json({ message: 'An error occurred while getting category' })
+    respond(res, {
+      status: {
+        type: 'error',
+        key: 'auth.signin.error'
+      }
+    })
   }
 }

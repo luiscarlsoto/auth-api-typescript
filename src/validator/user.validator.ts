@@ -5,23 +5,21 @@ import { validate } from '../helpers/validateHelper.helper'
 
 const isValidEmail: CustomValidator = async (value: string) => {
   const results = await User.findBy({ email: value })
-  if (results.length > 0) {
-    throw new Error('Email already in use')
-  }
+  if (results.length > 0) { throw new Error('validation.emailAlreadyTaken') }
 }
 
 export const validateUserSignUp = [
   check('email')
-    .isEmail().withMessage('Must be a valid email')
+    .isEmail().withMessage('validation.emailFormatError')
     .custom(isValidEmail)
-    .isLength({ min: 3, max: 50 }).withMessage('Must be a email between 3 and 50 characters'),
+    .isLength({ min: 3, max: 50 }).withMessage('validation.emailLengthError'),
   check('password')
-    .isString().withMessage('Must be a string')
-    .isLength({ min: 5, max: 255 }).withMessage('Must be a password between 5 and 255 characters'),
+    .isString().withMessage('validation.passwordFormatError')
+    .isLength({ min: 5, max: 255 }).withMessage('validation.passwordLengthError'),
   check('image')
     .optional()
-    .isString().withMessage('Must be a string')
-    .isLength({ min: 3, max: 255 }).withMessage('Must be a image between 3 and 255 characters'),
+    .isString().withMessage('validation.imageFormatError')
+    .isLength({ min: 3, max: 255 }).withMessage('validation.imageLengthError'),
   check('created_at')
     .optional()
     .isString()
@@ -37,11 +35,10 @@ export const validateUserSignUp = [
 
 export const validateUserSignIn = [
   check('email')
-    .isEmail().withMessage('Must be a valid email')
-    .isLength({ min: 3, max: 50 }).withMessage('Must be a email between 3 and 50 characters'),
+    .isEmail().withMessage('validation.emailFormatError')
+    .isLength({ min: 3, max: 50 }).withMessage('validation.emailLengthError'),
   check('password')
-    .isString().withMessage('Must be a string')
-    .isLength({ min: 5, max: 255 }).withMessage('Must be a password between 5 and 255 characters'),
+    .isString().withMessage('validation.passwordFormatError'),
   (req: Request, res: Response, next: NextFunction) => {
     validate(req, res, next)
   }
