@@ -38,7 +38,7 @@ This is a "to do" and authentication API built with TypeScript. It allows users 
 ``post - api/auth/singup``
 ##### body
 ```javascript
-
+// Content-Type: application/json
 
 {
   "email": String,
