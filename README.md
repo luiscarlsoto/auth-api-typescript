@@ -32,32 +32,53 @@ This is an authentication API built with TypeScript. It allows users to register
 4. Start the server: `npm run start`
 
 ## Endpoints
-### Register a New User
+### Create a new user
 #### Request
 
-- ``POST /register``
+``post - api/auth/singup``
+##### body
+```javascript
+
+
+{
+  "email": String,
+  "password": String,
+}
+
+```
+###### Response
+```javascript 
+
+{
+  "status": {
+    "key": "auth.signin.success",
+    "type": "success"
+  },
+  "token": "your-token"
+}
+```
+### Login with a user
+``post - api/auth/signin``
+##### body
 ```javascript
 // Content-Type: application/json
 
 {
-  "username": "your-username",
-  "password": "your-password"
+  "email": String,
+  "password": String,
+  "rememberMe": Boolean
 }
 ```
-- ``POST /login``
-```javascript
-// Content-Type: application/json
+###### Response
+```javascript 
 
 {
-  "username": "your-username",
-  "password": "your-password"
+  "status": {
+    "key": "auth.signin.success",
+    "type": "success"
+  },
+  "token": "your-token"
 }
-```
-- ``GET /auth``
-```javascript
-// Content-Type: application/json
-
-Authorization: 'Bearer your-jwt-token'
 ```
 
 ### License
