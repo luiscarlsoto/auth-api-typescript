@@ -36,11 +36,20 @@ export const signIn = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body
 
-    const result = await User.findOneOrFail({
+    const result = await User.findOne({
       where: {
         email
       }
     })
+
+    if (result == null) {
+      return respond(res, {
+        status: {
+          type: 'error',
+          key: 'auth.signin.invalidCredentials'
+        }
+      })
+    }
 
     const isPasswordValid: boolean = await bcrypt.compare(String(password), result.password)
 
