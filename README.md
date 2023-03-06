@@ -1,6 +1,6 @@
 # To do and authentication API with TypeScript
 
-This is an to do and authentication API built with TypeScript. It allows users to register, login, and authenticate with JWT tokens and generate, edit, delete and get tasks.
+This is a "to do" and authentication API built with TypeScript. It allows users to register, login, and authenticate with JWT tokens and generate, edit, delete and get tasks.
 
 ## Technologies Used
 - TypeScript
