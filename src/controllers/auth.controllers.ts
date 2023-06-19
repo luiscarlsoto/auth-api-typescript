@@ -11,9 +11,8 @@ export const signUp = async (req: Request, res: Response): Promise<any> => {
     const encryptedPassword = await bcrypt.hash(String(password), 10)
     user.email = email
     user.password = encryptedPassword
-    await user.save()
-
-    const token = jwt.sign({ email }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
+    const { id } = await user.save()
+    const token = jwt.sign({ id }, process.env.JWT_SECRET ?? 'SECRET_123')
 
     respond(res, {
       token,
@@ -62,7 +61,7 @@ export const signIn = async (req: Request, res: Response): Promise<any> => {
       })
     }
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
+    const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
     respond(res, {
       token,
       status: {
