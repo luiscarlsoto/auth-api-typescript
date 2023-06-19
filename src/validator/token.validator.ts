@@ -16,12 +16,16 @@ export const validateTokenMiddleware = (req: Request, res: Response, next: NextF
   }
 
   try {
-    jwt.verify(token ?? '', 'secreto') as Record<string, any>
+    const { id }: any = jwt.verify(token ?? '', process.env.JWT_SECRET ?? 'SECRET_123', (err, decode) => {
+      if (err != null) return err
+      return decode
+    })
+    res.locals.id = id
     next()
-    return
-  } catch (error) {
+  } catch (error: any) {
     respond(res, {
       status: {
+        message: error.message,
         type: 'error',
         key: 'auth.invalidToken',
         code: 401
