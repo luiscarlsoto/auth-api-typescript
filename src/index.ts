@@ -1,10 +1,11 @@
 import express from 'express'
-import { authRoutes } from './routes'
+import { authRoutes, taskRoutes } from './routes'
 import 'reflect-metadata'
 import { AppDataSource } from './data-source'
 import cors from 'cors'
 
 const app = express()
+
 app.use(cors())
 app.use(express.json())
 
@@ -15,6 +16,7 @@ AppDataSource.initialize()
   .catch((error: ErrorCallback) => console.log(error))
 
 app.use('/api/auth', authRoutes)
+app.use('/api/task', taskRoutes)
 
 const serverPort = process.env.SERVER_PORT ?? 3000
 
