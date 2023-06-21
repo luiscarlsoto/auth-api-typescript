@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, OneToMany } from 'typeorm'
+import { Task } from './task'
 
 @Entity()
 export class User extends BaseEntity {
@@ -22,6 +23,9 @@ export class User extends BaseEntity {
     default: false
   })
     disabled: boolean
+
+  @OneToMany(() => Task, task => task.user)
+    tasks: Task[]
 
   @CreateDateColumn()
     createdAt: Date
