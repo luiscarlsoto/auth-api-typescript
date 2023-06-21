@@ -61,7 +61,7 @@ export const signIn = async (req: Request, res: Response): Promise<any> => {
       })
     }
 
-    const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
+    const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '1d' })
     respond(res, {
       token,
       status: {

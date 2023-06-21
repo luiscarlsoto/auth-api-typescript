@@ -3,6 +3,7 @@ import { authRoutes, taskRoutes } from './routes'
 import 'reflect-metadata'
 import { AppDataSource } from './data-source'
 import cors from 'cors'
+import { validateTokenMiddleware } from './validator/token.validator'
 
 const app = express()
 
@@ -16,7 +17,7 @@ AppDataSource.initialize()
   .catch((error: ErrorCallback) => console.log(error))
 
 app.use('/api/auth', authRoutes)
-app.use('/api/task', taskRoutes)
+app.use('/api/task', validateTokenMiddleware, taskRoutes)
 
 const serverPort = process.env.SERVER_PORT ?? 3000
 
