@@ -1,9 +1,8 @@
 import { Request, Response } from 'express'
 import { User } from '../entity/user'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import { respond } from '../helpers/commons.helper'
 import { Task } from '../entity/task'
+import { EntityNotFoundError } from 'typeorm'
 
 export const createTask = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -72,14 +71,14 @@ export const getTasks = async (_req: Request, res: Response): Promise<any> => {
       tasks: user?.tasks,
       status: {
         type: 'success',
-        key: 'task.updated.success'
+        key: 'tasks.get.success'
       }
     })
   } catch (error: any) {
     respond(res, {
       status: {
         type: 'error',
-        key: 'task.updated.error',
+        key: 'tasks.get.error',
         message: error.message
       }
     })
@@ -104,15 +103,22 @@ export const getTask = async (req: Request, res: Response): Promise<any> => {
     respond(res, {
       status: {
         type: 'success',
-        key: 'task.updated.success'
+        key: 'task.get.success'
       }
     })
   } catch (error: any) {
-    // console.error(error.message)
+    if (error instanceof EntityNotFoundError) {
+      respond(res, {
+        status: {
+          type: 'error',
+          key: 'task.get.notFound'
+        }
+      })
+    }
     respond(res, {
       status: {
         type: 'error',
-        key: 'task.updated.error',
+        key: 'task.get.error',
         message: error.message
       }
     })
@@ -137,65 +143,61 @@ export const editTask = async (req: Request, res: Response): Promise<any> => {
     respond(res, {
       status: {
         type: 'success',
-        key: 'task.updated.success'
+        key: 'task.edit.success'
       }
     })
   } catch (error: any) {
-    // console.error(error.message)
-    respond(res, {
-      status: {
-        type: 'error',
-        key: 'task.updated.error',
-        message: error.message
-      }
-    })
+    if (error instanceof EntityNotFoundError) {
+      respond(res, {
+        status: {
+          type: 'error',
+          key: 'task.edit.notFound'
+        }
+      })
+    } else {
+      respond(res, {
+        status: {
+          type: 'error',
+          key: 'task.edit.error',
+          message: error.message
+        }
+      })
+    }
   }
 }
 
 export const deleteTask = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { email, password } = req.body
+    const { taskId } = req.params
 
-    const result = await User.findOne({
-      where: {
-        email
-      }
+    const task = await Task.findOneByOrFail({
+      id: Number(taskId)
     })
 
-    if (result == null) {
-      return respond(res, {
-        status: {
-          type: 'error',
-          key: 'auth.signin.invalidCredentials'
-        }
-      })
-    }
+    task.deletedAt = new Date()
+    await task.save()
 
-    const isPasswordValid: boolean = await bcrypt.compare(String(password), result.password)
-
-    if (!isPasswordValid) {
-      return respond(res, {
-        status: {
-          type: 'error',
-          key: 'auth.signin.invalidCredentials'
-        }
-      })
-    }
-
-    const token = jwt.sign({ email }, process.env.JWT_SECRET ?? 'SECRET_123', { expiresIn: '60s' })
     respond(res, {
-      token,
       status: {
         type: 'success',
-        key: 'auth.signin.success'
+        key: 'task.delete.success'
       }
     })
-  } catch (error) {
-    respond(res, {
-      status: {
-        type: 'error',
-        key: 'auth.signin.error'
-      }
-    })
+  } catch (error: any) {
+    if (error instanceof EntityNotFoundError) {
+      respond(res, {
+        status: {
+          type: 'error',
+          key: 'task.delete.notFound'
+        }
+      })
+    } else {
+      respond(res, {
+        status: {
+          type: 'error',
+          key: 'auth.delete.error'
+        }
+      })
+    }
   }
 }
